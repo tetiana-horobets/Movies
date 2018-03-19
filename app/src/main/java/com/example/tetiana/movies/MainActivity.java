@@ -10,9 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.example.tetiana.movies.Service.RestAdapter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,10 +34,27 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         setContentView(R.layout.activity_main);
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.rv_show_movie);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        TextView mEmptyStateTextView = findViewById(R.id.empty_view);
         mAdapter = new MovieAdapter(this, movies, this);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setMovieList(movies);
+        if (!isOnline()){
+            mEmptyStateTextView.setText(R.string.no_internet);
+        }
         showPopularMovie();
+    }
+
+    public boolean isOnline() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int     exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        }
+        catch (IOException e)          { e.printStackTrace(); }
+        catch (InterruptedException e) { e.printStackTrace(); }
+
+        return false;
     }
 
     @Override
@@ -53,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.settings_menu, menu);
         if (menu_selection != -1) {
+
             MenuItem selected = (MenuItem) menu.findItem(menu_selection);
             selected.setChecked(true);
         }
