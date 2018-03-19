@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.settings_menu, menu);
         if (menu_selection != -1) {
-
             MenuItem selected = (MenuItem) menu.findItem(menu_selection);
             selected.setChecked(true);
         }
